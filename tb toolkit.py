@@ -23,9 +23,9 @@ st.set_page_config(page_title="TB toolkit",layout="wide")
 st.title("TB risk and burden toolkit")
 st.caption("educational tool.follow national TB program guidelines for real decisions.")
 
-t1, t2, t3, t4,t5= st.tabs([
+t1, t2, t3, t4, t5= st.tabs([
     "Screening,"
-    "burden and cascade",
+    "Burden and cascade",
     "transmission (Wells-Riley)",
     "Risk factors (PAF)",
     "About"
