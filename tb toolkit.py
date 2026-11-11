@@ -1,16 +1,15 @@
-print("hello,world")
+
 """
 risk and burden toolkit - streamlit app
 Run:pip install streamlit panadas numpy
 streamlit run tb_toolkit.py
-
 
 tabs:
 1. symptoms + risk factors screening (WHO-style symptom screen)
 2. Burden and care cascade (cases, detection gap,CFR,DALYS)
 3. Airborne transmissions risk (Wells-Rilley equation)
 4. population attributable fraction of TB risk factors
-5. about
+5. About
 
 Educational purposes only, not as a diagnostic tool by  Dr hadeera.
 """
@@ -29,7 +28,7 @@ t1, t2, t3, t4,t5= st.tabs([
     "burden and cascade",
     "transmission (Wells-Riley)",
     "Risk factors (PAF)",
-    "About",
+    "About"
 ])
 
 #--------------------------------------------------------------------------------TAB 1
