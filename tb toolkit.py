@@ -1,35 +1,30 @@
-
 """
-risk and burden toolkit - streamlit app
-Run:pip install streamlit panadas numpy
+TB burden and risk toolkit - streamlit app
+Run:
+pip install streamlit panadas numpy
 streamlit run tb_toolkit.py
 
-tabs:
+Tabs:
 1. symptoms + risk factors screening (WHO-style symptom screen)
 2. Burden and care cascade (cases, detection gap,CFR,DALYS)
 3. Airborne transmissions risk (Wells-Rilley equation)
 4. population attributable fraction of TB risk factors
-5. About
+5. about
 
 Educational purposes only, not as a diagnostic tool by  Dr hadeera.
 """
 
 import math
+
 import numpy as np
 import pandas as pd
 import streamlit as st
 
 st.set_page_config(page_title="TB toolkit",layout="wide")
-st.title("TB risk and burden toolkit")
+st.title("TB burden and risk toolkit")
 st.caption("educational tool.follow national TB program guidelines for real decisions.")
 
-t1, t2, t3, t4, t5= st.tabs([
-    "Screening,"
-    "Burden and cascade",
-    "transmission (Wells-Riley)",
-    "Risk factors (PAF)",
-    "About"
-])
+t1, t2, t3, t4, t5 = st.tabs(["Screening", "Burden and cascade", "transmission (Wells-Riley)", "Risk factors (PAF)", "About",])
 
 #--------------------------------------------------------------------------------TAB 1
 with t1:
@@ -102,13 +97,13 @@ if st.button("access",key="screen"):
     dw=st.number_input("disability weight(adjustable)",0.0,value=0.33)
     dur=st.number_input("average duration of illlness(years)",0.0,value=0.5)
 
-est=inc*pop/100_000
-m=st.columns(4)
-m[0].metric("estimated cases",f"{est:,.0f}")
-if est > 0:
-    m[1].metric("cases detection ratio",f"{notified/est:.0%}")
-    m[2].metric("missing cases",f"{max(est-notified,0):,.0f}")
-    m[3].metric("case fatality",f"{deaths/est:.1%}")
+    est=inc*pop/100_000
+    m=st.columns(4)
+    m[0].metric("estimated cases",f"{est:,.0f}")
+    if est > 0:
+     m[1].metric("cases detection ratio",f"{notified/est:.0%}")
+     m[2].metric("missing cases",f"{max(est-notified,0):,.0f}")
+     m[3].metric("case fatality",f"{deaths/est:.1%}")
 
     n=st.columns(3)
     n[0].metric("TB mortality per 100,000",f"{deaths/pop*100_000:.1f}")
@@ -190,8 +185,8 @@ if st.button("Calculate PAF"):
      d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
      st.dataframe(d.assign(PAF=d["PAF"].MAP("{:.1%}".FORMAT)),use_container_width=True)
      combined=1-(1-d["PAF"]).prod()
-st.metric("Combined PAF( assumes independent factors )",f"{combined:.1%}")
-st.caption("Overlapping risk factors mean the true combined PAF is usually"
+     st.metric("Combined PAF( assumes independent factors )",f"{combined:.1%}")
+     st.caption("Overlapping risk factors mean the true combined PAF is usually"
          "lower than this independent estimate."
     )
 #------------------------------------------------------------------------------------TAB 5
@@ -212,4 +207,3 @@ with t5:
 
 
 
-         
