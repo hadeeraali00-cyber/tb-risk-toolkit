@@ -2,20 +2,21 @@ print("hello,world")
 """
 risk and burden toolkit - streamlit app
 Run:pip install streamlit panadas numpy
-streamlit run tb_risk_app.py
+streamlit run tb_toolkit.py
 
 
 tabs:
 1. symptoms + risk factors screening (WHO-style symptom screen)
 2. Burden and care cascade (cases, detection gap,CFR,DALYS)
 3. Airborne transmissions risk (Wells-Rilley equation)
-4. population attributable fraction of tb risk factors
+4. population attributable fraction of TB risk factors
+5. about
+
 Educational purposes only, not as a diagnostic tool by  Dr hadeera.
 """
 
-
 import math
-
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -23,25 +24,27 @@ st.set_page_config(page_title="TB toolkit",layout="wide")
 st.title("TB risk and burden toolkit")
 st.caption("educational tool.follow national TB program guidelines for real decisions.")
 
-t1, t2, t3, t4 = st.tabs([
-    "Screening, burden and cascade",
+t1, t2, t3, t4,t5= st.tabs([
+    "Screening,"
+    "burden and cascade",
     "transmission (Wells-Riley)",
     "Risk factors (PAF)",
-    "About"
+    "About",
 ])
-["screening,burden and cascade","transmiision(wellls-Rilley)","risk factors (PAF)"]
-
 
 #--------------------------------------------------------------------------------TAB 1
 with t1:
     st.subheader("symptoms and risk-factor screen")
     c1,c2=st.columns(2)
+
 with c1: 
+        st.markdown("**symptoms**")
         cough = st.checkbox("Cough (any duration; 2+ weeks is classic)")
         hemo = st.checkbox("Coughing up blood")
         fever = st.checkbox("Fever")
         sweats = st.checkbox("Night sweats")
         w1 = st.checkbox("Unintentional weight loss")
+
         with c2:
           st.markdown("**Risk factors**")
         rf = {
@@ -59,136 +62,148 @@ with c1:
 if st.button("access",key="screen"):
     symptoms = [cough, hemo, fever, sweats, w1]
     n_sym, n_rf=sum(symptoms),sum(rf.values())
+
     if n_sym > 0:
         st.error(f"presumptive TB:{n_sym} symptoms(s) present.")
         st.write(
-            "suggested work-up: sputum rapid molecular test"
-                 "(e.g., Xpert MTB/RIF), chest X-ray,and drug resistance testing"
-                 "if positive. consider infection control while waiting results."
-                 )
+           "suggested work-up: sputum rapid molecular test"
+           "(e.g., Xpert MTB/RIF), chest X-ray,and drug resistance testing"
+           "if positive. consider infection control while waiting results."
+         )
         if hemo:
             st.write("hemoptysis is a red flag for TB. consider prompt clininical evaluation.")
-        elif n_rf > 0:
+    elif n_rf > 0:
             st.warning("no symptoms, but risk factors are present.")
             st.write("consider TB infection testing( IGRA or TST) for contacts",
                      "people with HIV, and immunosupressed patients. if positive"
-                     "and active TB is ruled out, TB preventive treatment may apply.")
-        else:
-            st.success("no symptoms or listed risk factors. low screening concern.")
-            if n_rf:
-                st.write("**risk factors present:**"+",".join(k for k, v in rf.items() if v))
-                st.caption("this is a qualitative screen, not a probability.")
+                     "and active TB is ruled out, TB preventive treatment may apply."
+        )
+    else:
+      st.success("no symptoms or listed risk factors. low screening concern.")
 
+    if n_rf:
+       st.write("**risk factors present:**"+",".join(k for k, v in rf.items() if v))
+    st.caption("this is a qualitative screen, not a probability.")
+  
+#--------------------------------------------------------------------------------TAB 2
+    with t2:
+      st.subheader("population TB burden and care cascade")
+    a,b=st.columns(2)
 
-                #--------------------------------------------------------------------------------TAB 2
-                with t2:
+    with a:
+        pop=st.number_input("population",1,value=1_000_000,step=10_000)
+        inc=st.number_input("estimated incidence(per 100,000 per year)",0.0,value=200.0)
+        notified=st.number_input("cases notified to the program",0,value=1500)
+    deaths=st.number_input("TB deaths per year",0,value=100)
 
-                    st.subheader("population TB burden and care cascade")
-                    a,b=st.columns(2)
-                    with a:
-                        pop=st.number_input("population",1,value=1_000_000,step=10_000)
-                        inc=st.number_input("estimated incidence(per 100,000 per year)",0.0,value=200.0)
-                        notified=st.number_input("cases notified to the program",0,value=1500)
-                        deaths=st.number_input("TB deaths per year",0,value=100)
-                        with b:
-                            cohort=st.number_input("treatment cohort size",0, value=1400)
-                            sucess=st.number_input("treatment sucesses (cured+completed)",0,value=1200)
-                            yll_per_year=st.number_input("average year of life lost per TB death",0.0,value=30.0)
-                            dw=st.number_input("disability weight(adjustable)",0.0,value=0.33)
-                            dur=st.number_input("average duration of illlness(years)",0.0,value=0.5)
+    with b:
+        cohort=st.number_input("treatment cohort size",0, value=1400)
+    sucess=st.number_input("treatment sucesses (cured+completed)",0,value=1200)
+    yll_per_year=st.number_input("average year of life lost per TB death",0.0,value=30.0)
+    dw=st.number_input("disability weight(adjustable)",0.0,value=0.33)
+    dur=st.number_input("average duration of illlness(years)",0.0,value=0.5)
 
+est=inc*pop/100_000
+m=st.columns(4)
+m[0].metric("estimated cases",f"{est:,.0f}")
+if est > 0:
+    m[1].metric("cases detection ratio",f"{notified/est:.0%}")
+    m[2].metric("missing cases",f"{max(est-notified,0):,.0f}")
+    m[3].metric("case fatality",f"{deaths/est:.1%}")
 
-                    est=inc*pop/100_000
-                    m=st.columns(4)
-                    m[0].metric("estimated cases",f"{est:,.0f}")
-                    if est > 0:
-                        m[1].metric("cases detection ratio",f"{notified/est:.0%}")
-                        m[2].metric("missing cases",f"{max(est-notified,0):,.0f}")
-                        m[3].metric("case fatality",f"{deaths/est:.1%}")
-                n=st.columns(3)
-                n[0].metric("TB mortality per 100,000",f"{deaths/pop*100_000:.1f}")
-                if cohort > 0:
-                    n[1].metric("treatment success",f"{sucess/cohort:.0%}")
-                yll,yld=deaths*yll_per_year,est*dw*dur
-                n[2].metric("DALLYs (YLL+YLD)",f"{yll+yld:,.f}")
-                st.write(f"YLL={yll:,.f}  YLD={yld:,.0f}"
-                         f"DALYs per 100,000=={(yll+yld)/pop*100_000:,.1f}")
-st.caption("WHO End TB targets:80% fewer cases and 90% fewer deaths by 2030 vs 2015, "
-           "and treatment sucesss of 90% or more for drug-susceptible TB is a common benchmark.")
+    n=st.columns(3)
+    n[0].metric("TB mortality per 100,000",f"{deaths/pop*100_000:.1f}")
+    if cohort > 0:
+        n[1].metric("treatment success",f"{sucess/cohort:.0%}")
 
+    yll,yld=deaths*yll_per_year,est*dw*dur
+    n[2].metric("DALLYs (YLL+YLD)",f"{yll+yld:,.f}")
+    st.write(
+             f"YLL={yll:,.f}  YLD={yld:,.0f}"
+             f"DALYs per 100,000=={(yll+yld)/pop*100_000:,.1f}"
+    )
+    st.caption(
+         "WHO End TB targets:80% fewer cases and 90% fewer deaths by 2030 vs 2015, "
+           "and treatment sucesss of 90% or more for drug-susceptible TB is a common benchmark."
+    )
 
-                #--------------------------------------------------------------------------------TAB 3
-import numpy as np
+ #--------------------------------------------------------------------------------TAB 3
 with t3:
-
-                st.subheader("airborne transmission risk :Wells-Rilley equation")
-                st.write("P(infection)=1-exp(-I*q*p*t/Q)")
-                x,y=st.columns(2)
-                with x:
-                    I=st.number_input("infectious people in the room (I)",min_value=1,value=1)
-                    q=st.number_input(
-                         "Quanta generation rate (per hour,q)",
-                         min_value=0.01,
-                         value=1.25,
-                         help="Highly variable : roughly 1 for a typical TB patient, "
-                              "much higher for super spreaders or procedures like intubation."
-                    )
-                    p=st.number_input(
-                         "Breathing rate of a susceptible person(m3/hour,p)",
-                         min_value= 0.1,
-                        value=0.5
-                    )
+ st.subheader("airborne transmission risk :Wells-Rilley equation")
+ st.write("P(infection)=1-exp(-I*q*p*t/Q)")
+ x,y=st.columns(2)
+ with x:
+     I=st.number_input("infectious people in the room (I)",min_value=1,value=1)
+     q=st.number_input(
+         "Quanta generation rate (per hour,q)",
+          min_value=0.01,
+          value=1.25,
+          help="Highly variable : roughly 1 for a typical TB patient, "
+               "much higher for super spreaders or procedures like intubation."
+    )
+     p=st.number_input(
+       "Breathing rate of a susceptible person(m3/hour,p)",
+        min_value= 0.1,
+        value=0.5
+     )
                     
-                with y:
-                    t = st.number_input(
+with y:
+     t = st.number_input(
                         "Exposure time (hour, t)",
-                        min_value=0.0,
+                        min_value=0.1,
                         max_value=24.0,
                         value=1.0,
                     )
-                    vol = st.number_input("Room volume (m3)", min_value=5.0, value=100.0)
-                    ach = st.number_input("Air changes per hour (ACH)", min_value=0.1, value=2.0)
+vol = st.number_input("Room volume (m3)", min_value=5.0, value=100.0)
+ach = st.number_input("Air changes per hour (ACH)", min_value=0.1, value=2.0)
 
+Q=ach*vol # ventilation rate m3/hour
+risk=1-math.exp(-I*q*p*t/Q)
+st.metric("Infection probability for one exposed person",f"{risk:.1%}")
 
-                Q=ach=vol
-                risk=1-math.exp(-I*q*p*t/Q)
-                st.metric("Infection probability for one exposed person",f"{risk:.1%}")
+sweep=np.array([0.5,1,2,4,6,12,20])
+curve=pd.DataFrame({
+    "ACH":sweep,
+     "risk": 1-np.exp(-I*q*p*t/(sweep*vol)),
+}).set_index("ACH")
+st.line_chart(curve)
+st.caption("More ventilation lowers risk. WHO suggests 12 ACH for new"
+           "airbrone-isolation rooms.Masks and UV-C add further protection."
+           )
 
-                sweep=np.array([0.5,1,2,4,6,12,20])
-                curve=pd.DataFrame({
+#---------------------------------------------------------------------------------TAB 4
+with t4:
+    st.subheader("Population attributable fraction(PAF)")
+    st.write("PAF=p(RR-1)/(1+p(RR-1)), where p=prevalance of the factor"
+             "and RR=relative risk of TB. replace the placeholder values below"
+             "with figures from your own data or a published source."
+    )
+    default=pd.DataFrame({
+           "Risk factor":["Factor A", "Factor B","fACTOR C"],
+            "Prevalance {0-1":[0.05,0.01,0.02],
+             "Realative risk":[10.0,3,2],
+     })
+    tb1=st.data_editor(default,num_rows="dynamic",use_container_width=True)
 
-                     "ACH":sweep,
-                     "risk": 1-np.exp(-I*q*p*t/(sweep*vol)),
-                }
-                ).set_index("ACH")
-                st.line_chart(curve)
-                st.caption("More ventilation lowers risk. WHO suggests 12 ACH for new"
-                           "airbrone-isolation rooms.Masks and UV-C add further protection.")
-
-
-               #---------------------------------------------------------------------------------TAB 4
-                with t4:
-                     st.subheader("Population attributable fraction(PAF)")
-                     st.write("PAF=p(RR-1)/(1+p(RR-1)), where p=prevalance of the factor"
-                              "and RR=relative risk of TB. replace the placeholder values below"
-                              "with figures from your own data or a published source.")
-                     default=pd.DataFrame({
-                          "Risk factor":["Factor A", "Factor B","fACTOR C"],
-                          "Prevalance {0-1":[0.05,0.01,0.02],
-                          "Realative risk":[10.0,3,2],
-                     })
-                     tb1=st.data_editor(default,num_rows="dynamic",use_container_width=True)
-
-                     if st.button("Calculate PAF"):
-                          d=tb1.dropna().copy()
-                          pr,rr=d["prevalance(0.1)"],d["Relative risk"]
-                          d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
-                          st.dataframe(d.assign(PAF=d["PAF"].MAP("{:.1%}".FORMAT)),use_container_width=True)
-                          combined=1-(1-d["PAF"]).prod()
-                          st.metric("Combined PAF( assumes independent factors )",f"{combined:.1%}")
-                          st.caption("Overlapping risk factors mean the true combined PAF is usually"
-                                     "lower than this independent estimate.")
-                          
+if st.button("Calculate PAF"):
+     d=tb1.dropna().copy()
+     pr,rr=d["prevalance(0.1)"],d["Relative risk"]
+     d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
+     st.dataframe(d.assign(PAF=d["PAF"].MAP("{:.1%}".FORMAT)),use_container_width=True)
+     combined=1-(1-d["PAF"]).prod()
+st.metric("Combined PAF( assumes independent factors )",f"{combined:.1%}")
+st.caption("Overlapping risk factors mean the true combined PAF is usually"
+         "lower than this independent estimate."
+    )
+#------------------------------------------------------------------------------------TAB 5
+with t5:
+    st.subheader("About")
+    st.write(
+        "This toolkit supports tb screening, burden estimation, airbrone"
+        "Transmission modeling, and risk factor analysis. It was developed"
+        "in python with streamlit by Dr hadera for educational use only."
+    )                 
+    st.write("It is not a diagnostic tool and has not been clinically valided.")
                 
 
 
@@ -196,3 +211,6 @@ with t3:
 
 
 
+
+
+         
