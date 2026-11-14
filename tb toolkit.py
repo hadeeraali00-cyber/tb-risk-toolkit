@@ -83,7 +83,7 @@ if st.button("access",key="screen"):
 
     if n_rf:
        st.write("**risk factors present:**"+",".join(k for k, v in rf.items() if v))
-    st.caption("this is a qualitative screen, not a probability.")
+       st.caption("this is a qualitative screen, not a probability.")
   
 #--------------------------------------------------------------------------------TAB 2
     with t2:
@@ -94,7 +94,7 @@ if st.button("access",key="screen"):
         pop=st.number_input("population", min_value=1, value=1_000_000, step=10_000)
         inc=st.number_input("estimated incidence(per 100,000 per year)", min_value=0.0, value=200.0)
         notified=st.number_input("cases notified to the program", min_value=0, value=1500)
-    deaths=st.number_input("TB deaths per year", min_value=0, value=100)
+        deaths=st.number_input("TB deaths per year", min_value=0, value=100)
 
     with b:
        cohort=st.number_input("treatment cohort size", min_value=0.0, value=1400)
@@ -107,7 +107,7 @@ if st.button("access",key="screen"):
     if success > cohort:
         st.warning("Treatment successes cannot exceed the cohort size.")
         if est > 0 and deaths > est:
-        st.warning("Deaths exceed estimated cases; check your inputs.")
+        st.warning("deaths exceed estimated cases; check your inputs.")
         
     m=st.columns(4)
     m[0].metric("estimated cases",f"{est:,.0f}")
