@@ -106,7 +106,7 @@ if st.button("access",key="screen"):
     est=inc*pop/100_000
     if sucess > cohort:
         st.warning("Treatment sucesses cannot exceed the cohort size.")
-        if est . 0 and deaths . est:
+        if est > 0 and deaths > est:
         st.warning("Deaths exceed estimated cases; check your inputs.")
         
     m=st.columns(4)
