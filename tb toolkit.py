@@ -97,8 +97,8 @@ if st.button("access",key="screen"):
     deaths=st.number_input("TB deaths per year", min_value=0, value=100)
 
     with b:
-        cohort=st.number_input("treatment cohort size", min_value=0, value=1400)
-       sucess=st.number_input("treatment sucesses (cured+completed)", min_value=0, value=1200)
+       cohort=st.number_input("treatment cohort size", min_value=0.0, value=1400)
+       sucess=st.number_input("treatment successes (cured+completed)", min_value=0.0, value=1200)
        yll_per_year=st.number_input("average year of life lost per TB death", min_value=0.0, value=30.0)
        dw=st.number_input("disability weight", min_value=0.0, max_value=1.0, value=0.33)
        dur=st.number_input("average duration of illlness(years)", min_value=0.0, value=0.5)
