@@ -180,8 +180,8 @@ st.caption(
 #---------------------------------------------------------------------------------TAB 4
 with t4:
     st.subheader("Population attributable fraction (PAF)")
-    st.write("
-            PAF=p(RR-1)/(1+p(RR-1)), where p=prevalance of the factor"
+    st.write(
+           "PAF=p(RR-1)/(1+p(RR-1)), where p=prevalance of the factor"
            "and RR=relative risk of TB. Replace the placeholder values below"
            "with figures from your own data or a published source."
     )
