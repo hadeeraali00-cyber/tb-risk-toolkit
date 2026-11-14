@@ -180,9 +180,10 @@ st.caption(
 #---------------------------------------------------------------------------------TAB 4
 with t4:
     st.subheader("Population attributable fraction (PAF)")
-    st.write("PAF=p(RR-1)/(1+p(RR-1)), where p=prevalance of the factor"
-             "and RR=relative risk of TB. Replace the placeholder values below"
-             "with figures from your own data or a published source."
+    st.write("
+            PAF=p(RR-1)/(1+p(RR-1)), where p=prevalance of the factor"
+           "and RR=relative risk of TB. Replace the placeholder values below"
+           "with figures from your own data or a published source."
     )
     default=pd.DataFrame(
         {
@@ -193,13 +194,13 @@ with t4:
     )
  tb1=st.data_editor(default, num_rows="dynamic",width="stretch")
 
-if st.button("Calculate PAF"):
+  if st.button("Calculate PAF"):
      d= tb1.dropna().copy()
-    if d.empty:
+     if d.empty:
         st.warning("Enter a least one complete row.")
-    elif not d["Prevalance (0-1)"].between(0-1).all() or (d["Relative risk"] <1.any():
-                   sr.error("Prevalance must be between 0 and 1, and relative risk must be at least 1.")
-    else:
+     elif not d["Prevalance (0-1)"].between(0-1).all() or (d["Relative risk"] <1.any():
+         sr.error("Prevalance must be between 0 and 1, and relative risk must be at least 1.")
+     else:
      pr,rr=d["Prevalance(0.1)"],d["Relative risk"]
      d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
      combined=1-(1-d["PAF"]).prod()
