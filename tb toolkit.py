@@ -34,28 +34,28 @@ with t1:
     c1, c2=st.columns(2)
 
 with c1: 
-        st.markdown("**symptoms**")
-        cough = st.checkbox("Cough (any duration; 2+ weeks is classic)")
-        hemo = st.checkbox("Coughing up blood")
-        fever = st.checkbox("Fever")
-        sweats = st.checkbox("Night sweats")
-        w1 = st.checkbox("Unintentional weight loss")
+    st.markdown("**symptoms**")
+    cough = st.checkbox("Cough (any duration; 2+ weeks is classic)")
+    hemo = st.checkbox("Coughing up blood")
+    fever = st.checkbox("Fever")
+    sweats = st.checkbox("Night sweats")
+    w1 = st.checkbox("Unintentional weight loss")
 
-        with c2:
-          st.markdown("**Risk factors**")
-        rf = {
-            "HIV infection": st.checkbox("HIV infection"),
-            "Close contact with a TB patient": st.checkbox("Close contact with a TB patient"),
-            "Diabetes": st.checkbox("Diabetes"),
-            "Undernutrition (BMI < 18.5)": st.checkbox("Undernutrition (BMI < 18.5)"),
-            "Smoking": st.checkbox("Current smoker"),
-            "Heavy alcohol use": st.checkbox("Heavy alcohol use"),
-            "Immunosuppression": st.checkbox("Steroids, cancer treatment, transplant, or biologics"),
-            "Chronic kidney disease / silicosis": st.checkbox("Chronic kidney disease or silicosis"),
-            "Congregate setting / health worker": st.checkbox(
-                "Prison, shelter, crowded housing, or health-care worker"
+with c2:
+    st.markdown("**Risk factors**")
+    rf = {
+          "HIV infection": st.checkbox("HIV infection"),
+          "Close contact with a TB patient": st.checkbox("Close contact with a TB patient"),
+          "Diabetes": st.checkbox("Diabetes"),
+          "Undernutrition (BMI < 18.5)": st.checkbox("Undernutrition (BMI < 18.5)"),
+          "Smoking": st.checkbox("Current smoker"),
+          "Heavy alcohol use": st.checkbox("Heavy alcohol use"),
+          "Immunosuppression": st.checkbox("Steroids, cancer treatment, transplant, or biologics"),
+          "Chronic kidney disease / silicosis": st.checkbox("Chronic kidney disease or silicosis"),
+          "Congregate setting / health worker": st.checkbox(
+           "Prison, shelter, crowded housing, or health-care worker"
             ),
-        }
+         }
 
 if st.button("access",key="screen"):
     n_sym =sum([cough, hemo, fever, sweats, w1])
@@ -88,20 +88,20 @@ if st.button("access",key="screen"):
 #--------------------------------------------------------------------------------TAB 2
     with t2:
       st.subheader("population TB burden and care cascade")
-    a,b=st.columns(2)
+    a, b=st.columns(2)
 
     with a:
-        pop=st.number_input("population",min_value=1,value=1_000_000,step=10_000)
-        inc=st.number_input("estimated incidence(per 100,000 per year)", min_value=0.0,value=200.0)
-        notified=st.number_input("cases notified to the program",min_value=0,value=1500)
-    deaths=st.number_input("TB deaths per year",min_value=0,value=100)
+        pop=st.number_input("population", min_value=1, value=1_000_000, step=10_000)
+        inc=st.number_input("estimated incidence(per 100,000 per year)", min_value=0.0, value=200.0)
+        notified=st.number_input("cases notified to the program", min_value=0, value=1500)
+    deaths=st.number_input("TB deaths per year", min_value=0, value=100)
 
     with b:
-        cohort=st.number_input("treatment cohort size",min_value=0, value=1400)
-    sucess=st.number_input("treatment sucesses (cured+completed)",min_value=0,value=1200)
-    yll_per_year=st.number_input("average year of life lost per TB death",min_value=0.0,value=30.0)
-    dw=st.number_input("disability weight(adjustable)",min_value=0.0,max_value=1.0,value=0.33)
-    dur=st.number_input("average duration of illlness(years)",min_value=0.0,value=0.5)
+        cohort=st.number_input("treatment cohort size", min_value=0, value=1400)
+       sucess=st.number_input("treatment sucesses (cured+completed)", min_value=0, value=1200)
+       yll_per_year=st.number_input("average year of life lost per TB death", min_value=0.0, value=30.0)
+       dw=st.number_input("disability weight", min_value=0.0, max_value=1.0, value=0.33)
+       dur=st.number_input("average duration of illlness(years)", min_value=0.0, value=0.5)
 
     est=inc*pop/100_000
     if sucess > cohort:
@@ -123,7 +123,7 @@ if st.button("access",key="screen"):
 
     yll=deaths*yll_per_year
     yld=est*dw*dur
-    n[2].metric("DALLYs (YLL+YLD)",f"{yll+yld:,.f}")
+    n[2].metric("DALLYs (YLL+YLD)",f"{yll+yld:,.0f}")
     st.write(
              f"YLL={yll:,.0f}  YLD={yld:,.0f}"
              f"DALYs per 100,000=={(yll+yld)/pop*100_000:,.1f}"
@@ -186,25 +186,25 @@ with t4:
     )
     default=pd.DataFrame(
         {
-           "Risk factor":["Factor A", "Factor B","factor C"],
-            "Prevalance (0-1)":[0.05,0.01,0.02],
-             "Realative risk":[10.0,3,2],
+          "Risk factor":["Factor A", "Factor B","factor C"],
+          "Prevalance (0-1)":[0.05, 0.01, 0.02],
+             "Relative risk":[10.0, 3.0, 2.0],
         }
     )
-    tb1=st.data_editor(default,num_rows="dynamic",use_container_width=True)
+ tb1=st.data_editor(default, num_rows="dynamic",width="stretch")
 
 if st.button("Calculate PAF"):
-     d=tb1.dropna().copy()
-    if.empty:
-        st.warning("Enter a least one complete row".)
-                   elif not d["Prevalance(0-1)".between(0-1).all()or(d["Relative risk"]<1.any():
-                   sr.error(Prevalance must be between 0 and 1, and relative risk must be at least 1".)
-                   else:
-     pr,rr=d["prevalance(0.1)"],d["Relative risk"]
+     d= tb1.dropna().copy()
+    if d.empty:
+        st.warning("Enter a least one complete row.")
+    elif not d["Prevalance (0-1)"].between(0-1).all() or (d["Relative risk"] <1.any():
+                   sr.error("Prevalance must be between 0 and 1, and relative risk must be at least 1.")
+    else:
+     pr,rr=d["Prevalance(0.1)"],d["Relative risk"]
      d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
      combined=1-(1-d["PAF"]).prod()
      st.dataframe(d.assign(PAF=d["PAF"].map("{:.1%}".format)),width="stretch")
-     st.metric("Combined PAF( assumes independent factors )",f"{combined:.1%}")
+     st.metric("Combined PAF(assumes independent factors)",f"{combined:.1%}")
      st.caption(
          "Overlapping risk factors mean the true combined PAF is usually"
          "lower than this independent estimate."
