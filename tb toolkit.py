@@ -119,7 +119,7 @@ if st.button("access",key="screen"):
     n=st.columns(3)
     n[0].metric("TB mortality per 100,000",f"{deaths/pop*100_000:.1f}")
     if cohort > 0:
-        n[1].metric("treatment success",f"{sucess/cohort:.0%}")
+        n[1].metric("treatment success",f"{success/cohort:.0%}")
 
     yll=deaths*yll_per_year
     yld=est*dw*dur
@@ -199,14 +199,14 @@ with t4:
      if d.empty:
         st.warning("Enter a least one complete row.")
      elif not d["Prevalance (0-1)"].between(0-1).all() or (d["Relative risk"] <1.any():
-         sr.error("Prevalance must be between 0 and 1, and relative risk must be at least 1.")
+         st.error("Prevalance must be between 0 and 1, and relative risk must be at least 1.")
      else:
-     pr,rr=d["Prevalance(0.1)"],d["Relative risk"]
-     d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
-     combined=1-(1-d["PAF"]).prod()
-     st.dataframe(d.assign(PAF=d["PAF"].map("{:.1%}".format)),width="stretch")
-     st.metric("Combined PAF(assumes independent factors)",f"{combined:.1%}")
-     st.caption(
+         pr,rr=d["Prevalance(0.1)"],d["Relative risk"]
+         d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
+         combined=1-(1-d["PAF"]).prod()
+         st.dataframe(d.assign(PAF=d["PAF"].map("{:.1%}".format)),width="stretch")
+         st.metric("Combined PAF(assumes independent factors)",f"{combined:.1%}")
+ st.caption(
          "Overlapping risk factors mean the true combined PAF is usually"
          "lower than this independent estimate."
     )
