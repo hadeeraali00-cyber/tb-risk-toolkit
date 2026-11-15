@@ -1,4 +1,5 @@
 markdown
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24245747.svg)](https://doi.org/10.5281/zenodo.24245747)
 # TB BURDEN AND RISK TOOLKIT
 an educational streamlit app for TB screening, burden estimation,airbrone transmission modeling and risk-factor analysis
 > ** not a diagnostic tool and clinically validated. **follow national TB program guidelines for real decisions.
