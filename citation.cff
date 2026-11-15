@@ -1,23 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Ali"
-  given-names: "HADEERA"
+- family-names: "ali"
+  given-names: "hadeera"
   orcid: "https://orcid.org/0000-0002-1908-4588"
-  title: "tb-risk-toolkit"
+title: "tb-risk-toolkit"
 version: 1.0.0
+doi: 10.5281/zenodo.1234
 date-released: 2026-11-15
 url: "https://github.com/hadeeraali00-cyber/tb-risk-toolkit"
-license: MIT
-abstract: >-
-        An educational Streamlit application for tuberculosis symptom and
-        risk-factor screening, burden and care-cascade estimation, Wells-Riley
-        airborne transmission modeling, and population attributable fraction
-        calculation. Not a diagnostic tool and not clinically validated.
-  keywords:
-    -tuberculosis
-    -python
-    -streamlit
-    -population attributable fraction
-    -Wells-Riley 
-    -epidemiology
