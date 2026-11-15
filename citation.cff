@@ -19,9 +19,9 @@ abstract: >-
         airborne transmission modeling, and population attributable fraction
         calculation. Not a diagnostic tool and not clinically validated.
   keywords:
-      -tuberculosis
-      -python
-      -streamlit
-      -population attributable fraction
-      -Wells-Riley 
-      -epidemiology
+    -tuberculosis
+    -python
+    -streamlit
+    -population attributable fraction
+    -Wells-Riley 
+    -epidemiology
