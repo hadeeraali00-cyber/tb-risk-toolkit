@@ -5,7 +5,7 @@ authors:
   given-names: "hadeera"
   orcid: "https://orcid.org/0000-0002-1908-4588"
 title: "tb-risk-toolkit"
-version: 1.0.0
-doi: 10.5281/zenodo.1234
+version: 2.0.0
+doi: 10.5281/zenodo.24245747
 date-released: 2026-11-15
 url: "https://github.com/hadeeraali00-cyber/tb-risk-toolkit"
