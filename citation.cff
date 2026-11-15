@@ -4,12 +4,8 @@ authors:
 - family-names: "Ali"
   given-names: "HADEERA"
   orcid: "https://orcid.org/0000-0002-1908-4588"
-- family-names: "ALI"
-  given-names: "HADEERA"
-  orcid: "https://orcid.org/0000-0002-1908-4588"
-title: "tb-risk-toolkit"
+  title: "tb-risk-toolkit"
 version: 1.0.0
-doi: 
 date-released: 2026-11-15
 url: "https://github.com/hadeeraali00-cyber/tb-risk-toolkit"
 license: MIT
