@@ -1,3 +1,5 @@
+import math
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -5,34 +7,205 @@ st.set_page_config(
     page_title="TB Burden & Risk Toolkit",
     page_icon="🫁",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
 
 st.markdown(
     """
     <style>
+    .stApp {
+        background-color: #F1F5F9;
+    }
+    .block-container {
+        max-width: 960px;
+        padding-top: 1.5rem;
+        padding-bottom: 3rem;
+    }
+    .toolkit-card {
+        background: #FFFFFF;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        border: 1px solid #E2E8F0;
+    }
+    .toolkit-topbar {
+        background-color: #1B365D;
+        color: #FFFFFF;
+        text-align: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        padding: 12px 16px;
+        text-transform: uppercase;
+    }
+    .toolkit-body {
+        padding: 28px 36px 24px 36px;
+    }
+    .icon-row {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+    .icon-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF;
+        font-size: 1.15rem;
+        font-weight: bold;
+    }
+    .c-blue { background-color: #1E90FF; }
+    .c-amber { background-color: #F59E0B; }
+    .c-green { background-color: #10B981; }
+    .kicker {
+        text-align: center;
+        color: #D97706;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .hero-title {
+        color: #1E293B;
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0 0 6px 0;
+        line-height: 1.2;
+    }
+    .hero-sub {
+        color: #64748B;
+        font-size: 1rem;
+        margin-bottom: 16px;
+    }
+    .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+    .pill {
+        background-color: #E0F2FE;
+        color: #0284C7;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 999px;
+    }
+    .amber-divider {
+        width: 56px;
+        height: 3px;
+        background-color: #F59E0B;
+        border-radius: 2px;
+        margin: 14px 0 18px 0;
+    }
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 22px 0;
+    }
+    .feature-list li {
+        color: #334155;
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .bullet-box {
+        display: inline-block;
+        width: 10px;
+        height: 14px;
+        border: 2px solid #10B981;
+        border-radius: 2px;
+        flex-shrink: 0;
+    }
+    .callout-box {
+        background-color: #F8FAFC;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        border-radius: 4px;
+        margin-bottom: 14px;
+    }
+    .callout-label {
+        color: #D97706;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+    }
+    .callout-text {
+        color: #1E293B;
+        font-size: 0.92rem;
+        font-weight: 600;
+    }
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid #E2E8F0;
+        padding: 12px 36px;
+        font-size: 0.8rem;
+        color: #64748B;
+    }
+    .card-footer span:last-child {
+        color: #0284C7;
+        font-weight: 600;
+    }
     [data-testid="stMetric"] {
         background-color: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 12px;
-        padding: 16px 20px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+        border-left: 4px solid #1B365D;
+        border-radius: 10px;
+        padding: 14px 18px;
     }
-
     button[data-baseweb="tab"] {
-        font-weight: 600;
-        font-size: 0.95rem;
-        padding: 10px 16px;
-    }
-
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2.5rem;
+        font-weight: 700;
+        color: #1B365D;
     }
     </style>
+
+    <div class="toolkit-card">
+        <div class="toolkit-topbar">PUBLIC HEALTH & EPIDEMIOLOGY ANALYTICS</div>
+        <div class="toolkit-body">
+            <div class="icon-row">
+                <div class="icon-circle c-blue">🫁</div>
+                <div class="icon-circle c-amber">📊</div>
+                <div class="icon-circle c-green">🛡️</div>
+            </div>
+            <div class="kicker">TB EPIDEMIOLOGY & RISK TOOLKIT</div>
+            <div class="hero-title">TB Burden &amp; Risk Toolkit</div>
+            <div class="hero-sub">Quantitative screening, care cascade, transmission, and PAF modeling</div>
+            <div class="pill-row">
+                <span class="pill">WHO Symptom Screening</span>
+                <span class="pill">Wells-Riley Transmission</span>
+                <span class="pill">Population Attributable Fraction</span>
+            </div>
+            <div class="amber-divider"></div>
+            <ul class="feature-list">
+                <li><span class="bullet-box"></span>Screen symptoms and clinical risk factors systematically</li>
+                <li><span class="bullet-box"></span>Estimate TB burden, detection gaps, CFR, and DALYs</li>
+                <li><span class="bullet-box"></span>Model indoor airborne transmission probability (Wells-Riley)</li>
+                <li><span class="bullet-box"></span>Calculate individual and combined PAF across risk factors</li>
+            </ul>
+            <div class="callout-box">
+                <div class="callout-label">EDUCATIONAL &amp; RESEARCH TOOLKIT</div>
+                <div class="callout-text">Developed by Dr. Hadeera — Follow national TB program guidelines for clinical decisions</div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <span>Digital Epidemiology Toolkit</span>
+            <span>Not a clinical diagnostic tool</span>
+        </div>
+    </div>
     """,
     unsafe_allow_html=True,
 )
+
 
 """
 TB burden and risk toolkit - streamlit app
