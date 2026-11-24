@@ -1,3 +1,39 @@
+import pandas as pd
+import streamlit as st
+
+st.set_page_config(
+    page_title="TB Burden & Risk Toolkit",
+    page_icon="🫁",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown(
+    """
+    <style>
+    [data-testid="stMetric"] {
+        background-color: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    }
+
+    button[data-baseweb="tab"] {
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 10px 16px;
+    }
+
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2.5rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 """
 TB burden and risk toolkit - streamlit app
 Run:
@@ -17,10 +53,7 @@ Educational purposes only, not as a diagnostic tool by  Dr hadeera.
 import math
 
 import numpy as np
-import pandas as pd
-import streamlit as st
 
-st.set_page_config(page_title="TB toolkit",layout="wide")
 st.title("TB burden and risk toolkit")
 st.caption("educational tool.follow national TB program guidelines for real decisions.")
 
