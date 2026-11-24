@@ -201,7 +201,7 @@ if st.button("Calculate PAF"):
      elif not d["Prevalence (0-1)"].between(0,1).all() or (d["Relative risk"] <1).any():
          st.error("Prevalence must be between 0 and 1, and Relative risk must be at least 1.")
      else:
-       pr,rr=d["Prevalence(0.1)"],d["Relative risk"]
+       pr,rr=d["Prevalence (0-1)"],d["Relative risk"]
        d["PAF"]=pr*(rr-1)/(1+pr*(rr-1))
        combined=1-(1-d["PAF"]).prod()
        st.dataframe(d.assign(PAF=d["PAF"].map("{:.1%}".format)),width="stretch")
