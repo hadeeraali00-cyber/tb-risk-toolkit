@@ -198,7 +198,7 @@ if st.button("Calculate PAF"):
      d= tb1.dropna().copy()
      if d.empty:
         st.warning("Enter a least one complete row.")
-     elif not d["Prevalence (0-1)"].between(0-1).all() or (d["Relative risk"] <1).any():
+     elif not d["Prevalence (0-1)"].between(0,1).all() or (d["Relative risk"] <1).any():
          st.error("Prevalence must be between 0 and 1, and Relative risk must be at least 1.")
      else:
        pr,rr=d["Prevalence(0.1)"],d["Relative risk"]
